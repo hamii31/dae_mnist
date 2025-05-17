@@ -18,7 +18,7 @@ dae_model = load_dae()
 
 st.title("🧽 Denoising Autoencoder - MNIST Digit Cleaner")
 
-st.subheader("Tip: smaller number size equates to better accuracy."
+st.subheader("Tip: smaller number size equates to better accuracy.")
 
 canvas_result = st_canvas(
     fill_color="#000000",
