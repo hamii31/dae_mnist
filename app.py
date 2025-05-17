@@ -80,19 +80,8 @@ if canvas_result.image_data is not None:
     else:
         noisy_img = img
 
-    if st.button("🧼 Denoise"):
-        denoised = dae_model.predict(noisy_img)
-        # Denoise the image
-        denoised = dae_model.predict(noisy_img)
-
-        # Reshape and scale to 0-255
-        denoised_img = (denoised[0].reshape(28, 28) * 255).astype("uint8")
-
-        # Apply dilation to thicken strokes
-        kernel = np.ones((2, 2), np.uint8)  # You can increase (3,3) for thicker strokes
-        thickened = cv2.dilate(denoised_img, kernel, iterations=1)
-
-        # Normalize back to [0, 1] for display
-        thickened = thickened.astype("float32") / 255.0
-        st.subheader("✅ Denoised Output")
-        st.image(denoised.reshape(28, 28), width=150, clamp=True)
+     if st.button("🧼 Denoise"):
+         denoised = dae_model.predict(noisy_img)
+    
+         st.subheader("✅ Denoised Output")
+         st.image(denoised.reshape(28, 28), width=150, clamp=True)
