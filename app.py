@@ -80,8 +80,8 @@ if canvas_result.image_data is not None:
     else:
         noisy_img = img
 
-     if st.button("🧼 Denoise"):
-         denoised = dae_model.predict(noisy_img)
-    
-         st.subheader("✅ Denoised Output")
-         st.image(denoised.reshape(28, 28), width=150, clamp=True)
+    if st.button("🧼 Denoise"):
+        denoised = dae_model.predict(noisy_img)
+
+        st.subheader("✅ Denoised Output")
+        st.image(denoised.reshape(28, 28), width=150, clamp=True)
