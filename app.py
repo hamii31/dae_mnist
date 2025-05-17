@@ -11,7 +11,7 @@ def psnr_metric(y_true, y_pred):
 @st.cache_resource
 def load_dae():
     return tf.keras.models.load_model(
-        r"C:\Users\Hami\source\repos\DAE for NLP\DAE for NLP\dae_latent_64.keras",
+        r"dae_latent_64.keras",
         custom_objects={'psnr_metric': psnr_metric}
     )
 
