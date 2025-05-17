@@ -2,8 +2,7 @@ import streamlit as st
 from streamlit_drawable_canvas import st_canvas
 import numpy as np
 import tensorflow as tf
-import cv2
-
+from PIL import Image
 
 def psnr_metric(y_true, y_pred):
     return tf.image.psnr(y_true, y_pred, max_val=1.0)
@@ -21,7 +20,7 @@ st.title("🧽 Denoising Autoencoder - MNIST Digit Cleaner")
 
 canvas_result = st_canvas(
     fill_color="#000000",
-    stroke_width=6,  # similar to MNIST line thickness
+    stroke_width=6,
     stroke_color="#FFFFFF",
     background_color="#000000",
     height=280,
@@ -34,19 +33,22 @@ def preprocess_mnist_style(img):
     img = img[:, :, 0]  # take red channel
     img = img.astype("uint8")
 
-    # Threshold the image
-    _, img_bin = cv2.threshold(img, 30, 255, cv2.THRESH_BINARY)
+    # Threshold the image (simple numpy threshold)
+    img_bin = (img > 30).astype(np.uint8) * 255
 
     # Find bounding box of the digit
-    coords = cv2.findNonZero(img_bin)
-    if coords is not None:
-        x, y, w, h = cv2.boundingRect(coords)
-        digit = img_bin[y:y+h, x:x+w]
+    coords = np.argwhere(img_bin)
+    if coords.size > 0:
+        y0, x0 = coords.min(axis=0)
+        y1, x1 = coords.max(axis=0)
+        digit = img_bin[y0:y1+1, x0:x1+1]
     else:
         digit = img_bin
 
-    # Resize while maintaining aspect ratio
-    h, w = digit.shape
+    # Resize while maintaining aspect ratio using PIL
+    digit_img = Image.fromarray(digit)
+    h, w = digit_img.size[1], digit_img.size[0]  # PIL size is (width, height)
+
     if h > w:
         new_h = 20
         new_w = int(w * (20 / h))
@@ -54,15 +56,18 @@ def preprocess_mnist_style(img):
         new_w = 20
         new_h = int(h * (20 / w))
 
-    digit_resized = cv2.resize(digit, (new_w, new_h), interpolation=cv2.INTER_AREA)
+    digit_img = digit_img.resize((new_w, new_h), Image.Resampling.LANCZOS)
 
-    # Pad to 28x28
-    padded = np.zeros((28, 28), dtype="float32")
+    # Create new 28x28 image and paste resized digit centered
+    new_img = Image.new('L', (28, 28), 0)
     x_offset = (28 - new_w) // 2
     y_offset = (28 - new_h) // 2
-    padded[y_offset:y_offset+new_h, x_offset:x_offset+new_w] = digit_resized / 255.0
+    new_img.paste(digit_img, (x_offset, y_offset))
 
-    return padded.reshape(1, 28, 28, 1)
+    # Convert to numpy and normalize
+    arr = np.array(new_img).astype("float32") / 255.0
+
+    return arr.reshape(1, 28, 28, 1)
 
 if canvas_result.image_data is not None:
     img = preprocess_mnist_style(canvas_result.image_data)
