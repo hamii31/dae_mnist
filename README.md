@@ -1,7 +1,7 @@
-## Denoising Autoencoder - Handwritten Digit Cleaner
+# Denoising Autoencoder - Handwritten Digit Cleaner
 
 A simple and interactive Streamlit web app that lets you draw a digit, adds Gaussian noise, and uses a custom Denoising Autoencoder (DAE) trained on MNIST to clean and restore your digit.
-Features
+## Features
 
     Draw digits on a 140x140 black canvas using white strokes, similar in style and thickness to MNIST digits.
 
@@ -13,22 +13,22 @@ Features
 
     Displays both the noisy and denoised images for comparison.
 
-How to Run
+## How to Run
 
 Clone this repository:
 
     git clone https://github.com/your-username/dae-digit-cleaner.git
     cd dae-digit-cleaner
 
-Install dependencies:
+## Install dependencies:
 
     pip install -r requirements.txt
 
-Run the app:
+## Run the app:
 
     streamlit run app.py
 
-Usage:
+## Usage:
 
         Draw a digit in the canvas.
 
@@ -36,7 +36,7 @@ Usage:
 
         View the noisy and denoised outputs below the canvas.
 
-Requirements
+## Requirements
 
     Python 3.8+
 
@@ -50,7 +50,7 @@ Requirements
 
     Pillow
 
-Project Structure
+## Project Structure
 
     app.py — Main Streamlit app script.
 
@@ -58,7 +58,7 @@ Project Structure
 
     requirements.txt — Python dependencies.
 
-Notes
+## Notes
 
     The model is trained on MNIST digits normalized to the [0, 1] range.
 
