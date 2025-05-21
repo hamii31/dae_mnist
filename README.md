@@ -1,4 +1,4 @@
-# Denoising Autoencoder - Handwritten Digit Cleaner
+## Denoising Autoencoder - Handwritten Digit Cleaner
 
 A simple and interactive Streamlit web app that lets you draw a digit, adds Gaussian noise, and uses a custom Denoising Autoencoder (DAE) trained on MNIST to clean and restore your digit.
 Features
