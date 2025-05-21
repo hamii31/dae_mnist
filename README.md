@@ -1,31 +1,40 @@
-Denoising Autoencoder - MNIST Digit Cleaner
+Denoising Autoencoder - Handwritten Digit Cleaner
 
-A Streamlit web app that lets you draw noisy handwritten digits and cleans them using a pretrained Denoising Autoencoder (DAE) model trained on MNIST.
+A simple and interactive Streamlit web app that lets you draw a digit, adds Gaussian noise, and uses a custom Denoising Autoencoder (DAE) trained on MNIST to clean and restore your digit.
 Features
 
-    Draw digits on a black canvas with white strokes (similar thickness to MNIST digits).
+    Draw digits on a 140x140 black canvas using white strokes, similar in style and thickness to MNIST digits.
 
-    Automatic preprocessing: cropping, resizing, and padding your drawing to 28x28 pixels.
+    Automatic preprocessing: thresholds, crops, resizes, and centers your drawing into a 28×28 grayscale image.
 
-    Optionally add Gaussian noise to simulate noisy inputs.
+    Adds random Gaussian noise to simulate real-world input distortion.
 
-    Use a deep learning Denoising Autoencoder to clean the noisy digit.
+    Uses a deep learning autoencoder to denoise and reconstruct a clean version of your digit.
 
-    Visualize input, noisy, and denoised images side-by-side.
+    Displays both the noisy and denoised images for comparison.
 
 How to Run
 
-    Clone this repository.
+Clone this repository:
 
-    Install dependencies:
+    git clone https://github.com/your-username/dae-digit-cleaner.git
+    cd dae-digit-cleaner
 
-pip install -r requirements.txt
+Install dependencies:
 
-    Run the app:
+    pip install -r requirements.txt
 
-streamlit run app.py
+Run the app:
 
-    Draw a digit on the canvas and click Denoise to see the cleaned output.
+    streamlit run app.py
+
+Usage:
+
+        Draw a digit in the canvas.
+
+        Click the "Denoise" button.
+
+        View the noisy and denoised outputs below the canvas.
 
 Requirements
 
@@ -43,16 +52,16 @@ Requirements
 
 Project Structure
 
-    app.py - Main Streamlit app script.
+    app.py — Main Streamlit app script.
 
-    dae_latent_64.keras - Pretrained DAE model file.
+    dae_latent_64.keras — Pretrained DAE model file.
 
-    requirements.txt - Python dependencies.
+    requirements.txt — Python dependencies.
 
 Notes
 
-    The model is trained on MNIST digits normalized to [0, 1].
+    The model is trained on MNIST digits normalized to the [0, 1] range.
 
-    Preprocessing mimics MNIST digit style by cropping, resizing, and padding input drawings.
+    The preprocessing mimics the MNIST format by applying thresholding, cropping, resizing, and padding.
 
-    The app currently requires the DAE model file path to be updated according to your environment.
+    Update the model path in app.py to match the location of your .keras file.
