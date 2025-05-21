@@ -16,27 +16,27 @@ def load_dae():
 
 dae_model = load_dae()
 
-st.title("🧽 Denoising Autoencoder - MNIST Digit Cleaner")
-
-st.subheader("Tip: smaller number size equates to better accuracy.")
+st.title("DAE for Handwritten Digits")
+st.subheader("Simply draw a digit in the box below and click 'Denoise' to see the result.")
 
 canvas_result = st_canvas(
     fill_color="#000000",
     stroke_width=6,
     stroke_color="#FFFFFF",
     background_color="#000000",
-    height=280,
-    width=280,
+    height=140, 
+    width=140, 
     drawing_mode="freedraw",
     key="canvas",
 )
 
 def preprocess_mnist_style(img):
-    img = img[:, :, 0]  # take red channel
+    img = img[:, :, 0] # Red channel
     img = img.astype("uint8")
 
     # Threshold the image (simple numpy threshold)
-    img_bin = (img > 30).astype(np.uint8) * 255
+    threshold = np.percentile(img, 80)  # auto-adjusts threshold
+    img_bin = (img > threshold).astype(np.uint8) * 255
 
     # Find bounding box of the digit
     coords = np.argwhere(img_bin)
@@ -47,9 +47,9 @@ def preprocess_mnist_style(img):
     else:
         digit = img_bin
 
-    # Resize while maintaining aspect ratio using PIL
+    # Resizing while maintaining aspect ratio using PIL
     digit_img = Image.fromarray(digit)
-    h, w = digit_img.size[1], digit_img.size[0]  # PIL size is (width, height)
+    h, w = digit_img.size[1], digit_img.size[0] 
 
     if h > w:
         new_h = 20
@@ -66,7 +66,6 @@ def preprocess_mnist_style(img):
     y_offset = (28 - new_h) // 2
     new_img.paste(digit_img, (x_offset, y_offset))
 
-    # Convert to numpy and normalize
     arr = np.array(new_img).astype("float32") / 255.0
 
     return arr.reshape(1, 28, 28, 1)
@@ -74,21 +73,14 @@ def preprocess_mnist_style(img):
 if canvas_result.image_data is not None:
     img = preprocess_mnist_style(canvas_result.image_data)
 
-    st.subheader("✏️ Preprocessed Digit")
-    st.image(img.reshape(28, 28), width=150, clamp=True)
+    noise = np.random.normal(loc=0.0, scale=1.0, size=img.shape)
+    noisy_img = np.clip(img + 0.5 * noise, 0.0, 1.0)
+    if noisy_img is not None: 
+        st.subheader("Noisy Input")
+        st.image(noisy_img.reshape(28, 28), width=150, clamp=True)
 
-    add_noise = st.checkbox("🌪 Add Gaussian Noise?", value=False)
-    noise_level = st.slider("Noise Level", 0.0, 0.5, 0.3, 0.05) if add_noise else 0.0
-
-    if add_noise:
-        noise = np.random.normal(loc=0.0, scale=1.0, size=img.shape)
-        noisy_img = np.clip(img + noise_level * noise, 0.0, 1.0)
-        st.image(noisy_img.reshape(28, 28), width=150, caption="Noisy Input", clamp=True)
-    else:
-        noisy_img = img
-
-    if st.button("🧼 Denoise"):
+    if st.button("Denoise"):
         denoised = dae_model.predict(noisy_img)
 
-        st.subheader("✅ Denoised Output")
+        st.subheader("Denoised Output")
         st.image(denoised.reshape(28, 28), width=150, clamp=True)
